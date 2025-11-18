@@ -36,7 +36,7 @@ A plugin for Blender to import milo files from **Rock Band** and **Guitar Hero**
 - When imported, click on the armature, open the sidebar, and find the Animation Panel
 - On the animation panel, find the one you want to load then click it
 - The animation is now loaded! To view it with meshes, just put a modifier on each one for the object "Armature"
-### ACP:
+### ACP (More beta than milo):
 - Import character
 - Select the armature
 - Import the .acp containing the animation you want
