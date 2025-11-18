@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from . char_bones_samples import CharBonesSamples, CharBones, PosSample, QuatSample
+from . char_bones_samples import CharBonesSamples, CharBonesSamplesData, CharBones, PosSample, QuatSample
 from . char_clip import CharClip
 
 char_clip_samples = {}
@@ -10,6 +10,9 @@ class CharClipSamples:
     char_clip: CharClip = field(default_factory=CharClip)
     full: CharBonesSamples = field(default_factory=CharBonesSamples)
     one: CharBonesSamples = field(default_factory=CharBonesSamples)
+    ignore: CharBonesSamples = field(default_factory=CharBonesSamples)
+    full_data: CharBonesSamplesData = field(default_factory=CharBonesSamplesData)
+    one_data: CharBonesSamplesData = field(default_factory=CharBonesSamplesData)
     char_bones: CharBones = field(default_factory=CharBones)
 
     def read(self, reader, name: str):
@@ -26,7 +29,14 @@ class CharClipSamples:
             self.full.read(reader, self.version)
             self.one.read(reader, self.version)
 
-            find_next_file(reader)
+            if self.version > 7:
+                self.ignore.read(reader, self.version)
+            
+            self.full_data.read(reader, self.full)
+            self.one_data.read(reader, self.one)
+
+            self.full.char_bones_samples_data.samples = self.full_data.samples
+            self.one.char_bones_samples_data.samples = self.one_data.samples
         else:
             self.full.read(reader, -1)
             self.one.read(reader, -1)

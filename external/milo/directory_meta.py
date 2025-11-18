@@ -189,7 +189,7 @@ class DirectoryMeta:
             entry.obj = RndDir()
             entry.obj.read(reader, self, entry, False)
 
-            if (entry.obj.object_dir.inline_proxy == True) and (len(entry.obj.object_dir.proxy_file) > 0):
+            if (entry.obj.object_dir.version > 17 and entry.obj.object_dir.inline_proxy == True) and (len(entry.obj.object_dir.proxy_file) > 0):
                 dir = DirectoryMeta()
                 dir.platform = self.platform
                 dir.read(reader)

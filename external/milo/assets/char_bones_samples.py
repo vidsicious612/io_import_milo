@@ -118,7 +118,7 @@ class RotSample:
     bone_name: str = ""
 
     def read(self, reader, compression: CompressionEnum):
-        if compression.value < 2:
+        if compression.value == 0:
             self.x = reader.float32()
         else:
             sample = reader.short()
@@ -137,7 +137,7 @@ class Sample:
         bone_index = 0
 
         start = reader.tell()
-    
+
         for _ in range(pos_count):
             sample = PosSample()
             sample.read(reader, char_bones_samples.compression)
@@ -169,9 +169,11 @@ class Sample:
             bone_index += 1        
 
         end = reader.tell()
+
         diff = char_bones_samples.sample_size - (end - start)
 
-        padding = reader.read_bytes(diff)
+        if char_bones_samples.version > 11:
+            padding = reader.read_bytes(diff)
 
 @dataclass
 class CharBonesSamplesData:

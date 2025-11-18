@@ -1,4 +1,5 @@
 from dataclasses import dataclass, field
+from . band_char_desc import BandCharDesc
 from . character import Character
 
 @dataclass
@@ -7,6 +8,9 @@ class BandCharacter:
     character: Character = field(default_factory=Character)
     play_flags: int = 0
     tempo: str = ""
+    drum_venue: str = ""
+    test_prefab: BandCharDesc = field(default_factory=BandCharDesc)
+    instrument_type: str = ""
 
     def read(self, reader, directory_meta, entry, super: bool):
         self.version = reader.int32()
@@ -35,6 +39,18 @@ class BandCharacter:
 
             unk_string_2 = reader.numstring()
 
+        if self.version > 6:
+            self.drum_venue = reader.numstring()
+        
+        if self.version != 0:
+            self.test_prefab.read(reader)
+
+        if self.version in [2, 3, 4]:
+            unknown_bool = reader.milo_bool()
+
+        if self.version > 7:
+            self.instrument_type = reader.numstring()
+        
         if super == False:
             padding = reader.read_bytes(4)
 

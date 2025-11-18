@@ -168,6 +168,8 @@ class Tex:
             from .... install_modules import install
             install("pillow")
 
+            from PIL import Image
+
         image = Image.open(image_path)
 
         self.version = 8 if bpy_self.game_selection == "GH1" else 10

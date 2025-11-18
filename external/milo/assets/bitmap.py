@@ -173,6 +173,8 @@ class Bitmap:
         except:
             from .... install_modules import install
             install("pillow")
+
+            from PIL import Image
         
         image = Image.frombytes("RGBA", (self.width, self.height), self.decoded_image)
         image.save(filepath)

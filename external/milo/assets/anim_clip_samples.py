@@ -179,7 +179,7 @@ class AnimClipSamples:
                     bone = armature_dup.pose.bones.get(bone_name.replace(".quat", ".mesh"))
 
                     if bone:
-                        bone.rotation_quaternion = entry.entry
+                        bone.rotation_quaternion = (entry.entry[3], entry.entry[0], entry.entry[1], entry.entry[2])
                         bone.keyframe_insert("rotation_quaternion", frame=x)
 
         add_constraints(armature_dup, armature)
