@@ -86,8 +86,8 @@ class CharClipSamples:
                     constraint.target = source_armature
                     constraint.subtarget = bone_name
 
-                    constraint.owner_space = 'WORLD'
-                    constraint.target_space = 'WORLD'
+                    constraint.owner_space = "WORLD"
+                    constraint.target_space = "WORLD"
 
         def duplicate_armature(armature):
             armature_dup = bpy.data.objects.get("Armature 2")

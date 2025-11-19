@@ -19,6 +19,19 @@ def compute(bone, world_matrices: dict):
 
     return world
 
+def add_twist_constraint(armature, main_bone: str, twist_bone: str):
+    bpy.context.view_layer.objects.active = armature
+    bpy.ops.object.mode_set(mode="POSE")
+
+    twist_pbone = armature.pose.bones[twist_bone]
+
+    constraint = twist_pbone.constraints.new("COPY_ROTATION")
+    constraint.target = armature
+    constraint.subtarget = main_bone
+    constraint.owner_space = "LOCAL"
+    constraint.target_space = "LOCAL"
+    constraint.influence = 1.0
+
 def import_bones(bones: list, character_name: str):
     armature_data = bpy.data.armatures.new("Armature")
     armature_obj = bpy.data.objects.new("Armature", armature_data)
@@ -58,9 +71,13 @@ def import_bones(bones: list, character_name: str):
     world_matrices = {}
 
     for bone in bones:
-        world_matrix = compute(bone, world_matrices)
+        # Hair bones seem to not need computing
+        if not bone.name.startswith("bone_hair"):
+            world_matrix = compute(bone, world_matrices)
+        else:
+            world_matrix = bone.obj.world_xfm
         
-        world_matrices[bone.name] = compute(bone, world_matrices)
+        world_matrices[bone.name] = world_matrix
 
     bpy.ops.object.mode_set(mode="EDIT")
 
@@ -90,6 +107,34 @@ def import_bones(bones: list, character_name: str):
 
             if (parent_bone) and (edit_bone):
                 edit_bone.parent = parent_bone
+
+    # Left arm upper twist constraints
+    left_arm_upper = bones_by_name.get("bone_L-upperArm.mesh")
+    left_arm_upper_twist = bones_by_name.get("bone_L-upperTwist1.mesh")
+
+    if (left_arm_upper) and (left_arm_upper_twist):
+        add_twist_constraint(armature_obj, left_arm_upper.name, left_arm_upper_twist.name)
+
+    # Right arm upper twist constraints
+    right_arm_upper = bones_by_name.get("bone_R-upperArm.mesh")
+    right_arm_upper_twist = bones_by_name.get("bone_R-upperTwist1.mesh")
+
+    if (right_arm_upper) and (right_arm_upper_twist):
+        add_twist_constraint(armature_obj, right_arm_upper.name, right_arm_upper_twist.name)
+
+    # Left arm fore twist constraints
+    left_arm_fore = bones_by_name.get("bone_L-foreArm.mesh")
+    left_arm_fore_twist = bones_by_name.get("bone_L-foreTwist1.mesh")
+
+    if (left_arm_fore) and (left_arm_fore_twist):
+        add_twist_constraint(armature_obj, left_arm_fore.name, left_arm_fore_twist.name)
+
+    # Right arm fore twist constraints
+    right_arm_fore = bones_by_name.get("bone_R-foreArm.mesh")
+    right_arm_fore_twist = bones_by_name.get("bone_R-foreTwist1.mesh")
+
+    if (right_arm_fore) and (right_arm_fore_twist):
+        add_twist_constraint(armature_obj, right_arm_fore.name, right_arm_fore_twist.name)
 
     bpy.ops.object.mode_set(mode="OBJECT")
 
@@ -125,6 +170,8 @@ def import_mesh_bones(bones: list, character_name: str):
 
         bone.obj.trans.world_xfm = world_matrix.to_4x4()
 
+    bones_by_name = {bone.name: bone for bone in bones}
+
     world_matrices = {}
 
     for bone in bones:
@@ -158,6 +205,34 @@ def import_mesh_bones(bones: list, character_name: str):
 
             if (parent_bone) and (edit_bone):
                 edit_bone.parent = parent_bone
+
+    # Left arm upper twist constraints
+    left_arm_upper = bones_by_name.get("bone_L-upperArm.mesh")
+    left_arm_upper_twist = bones_by_name.get("bone_L-upperTwist1.mesh")
+
+    if (left_arm_upper) and (left_arm_upper_twist):
+        add_twist_constraint(armature_obj, left_arm_upper.name, left_arm_upper_twist.name)
+
+    # Right arm upper twist constraints
+    right_arm_upper = bones_by_name.get("bone_R-upperArm.mesh")
+    right_arm_upper_twist = bones_by_name.get("bone_R-upperTwist1.mesh")
+
+    if (right_arm_upper) and (right_arm_upper_twist):
+        add_twist_constraint(armature_obj, right_arm_upper.name, right_arm_upper_twist.name)
+
+    # Left arm fore twist constraints
+    left_arm_fore = bones_by_name.get("bone_L-foreArm.mesh")
+    left_arm_fore_twist = bones_by_name.get("bone_L-foreTwist1.mesh")
+
+    if (left_arm_fore) and (left_arm_fore_twist):
+        add_twist_constraint(armature_obj, left_arm_fore.name, left_arm_fore_twist.name)
+
+    # Right arm fore twist constraints
+    right_arm_fore = bones_by_name.get("bone_R-foreArm.mesh")
+    right_arm_fore_twist = bones_by_name.get("bone_R-foreTwist1.mesh")
+
+    if (right_arm_fore) and (right_arm_fore_twist):
+        add_twist_constraint(armature_obj, right_arm_fore.name, right_arm_fore_twist.name)
 
     bpy.ops.object.mode_set(mode="OBJECT")
 
